@@ -1,0 +1,23 @@
+# Node modules
+node_modules
+
+# Adonis directory for storing tmp files
+tmp
+
+# Environment variables, never commit this file
+.env
+
+# The development sqlite file
+database/development.sqlite
+
+# Google Cloud Storage service account file
+# gcp-service-account.json
+
+yarn.lock
+yarn-error.log
+bash.exe.stackdump
+ngrok.exe
+
+# Remove .htaccess for live deployment
+public/.htaccess
+gcp-service-account.json
