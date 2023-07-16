@@ -1,11 +1,12 @@
 const user = require("../models/userModel");
-
 const db = require("../models/index");
 const User = db.user;
 const Op = db.Sequelize.Op;
-const sendToken = require('../utils/jwtToken')
+const sendToken = require('../utils/jwtToken');
+const catchAsyncErrors = require('../utils/ErrorHandler')
+const ErrorHandler = require("../utils/ErrorHandler")
 
-const signup = async (req, res) => {
+const signup = catchAsyncErrors(async (req, res, next) => {
     const { username, password, email } = req.body;
     try {
         if (!username || !email || !password) {
@@ -51,44 +52,48 @@ const signup = async (req, res) => {
         })
 
         sendToken(newUser, 200, res);
-    } catch {
+    } catch(error) {
         res.status(500).json({
             success: false,
             message: error.message,
         });
     }
-};
+});
 
-const login = async (req, res, next) => {
+const login = catchAsyncErrors(async (req, res, next) => {
+    const { password, email } = req.body;
     try {
-        const prisma = new PrismaClient();
-        const { email, password } = req.body;
-        if (email && password) {
-            const user = await prisma.user.findUnique({
-                where: {
-                    email,
-                },
-            });
-            if (!user) {
-                return res.status(404).send("User not found");
-            }
-
-            const auth = await compare(password, user.password);
-            if (!auth) {
-                return res.status(400).send("Invalid Password");
-            }
-
-            return res.status(200).json({
-                user: { id: user?.id, email: user?.email },
-                jwt: createToken(email, user.id),
-            });
-        } else {
-            return res.status(400).send("Email and Password Required");
+        if (!email || !password) {
+            return res.status(400).json({
+                status: false,
+                message: 'Empty Input Fields'
+            })
         }
-    } catch (err) {
-        return res.status(500).send("Internal Server Error");
+
+        const checkUser = await User.findOne({ email });
+
+        if (!checkUser) {
+            return next(
+              new ErrorHandler("User is not find with this email & password", 401)
+            );
+        }
+
+        const isPasswordMatched = await user.comparePassword(password);
+
+        if (!isPasswordMatched) {
+            return next(
+              new ErrorHandler("User is not find with this email & password", 401)
+            );
+        }
+
+        sendToken(checkUser, 200, res);
+    } catch(error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
     }
-};
+});
 
 
 module.exports = { signup, login }
