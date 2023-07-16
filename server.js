@@ -3,7 +3,7 @@ const app = express();
 require('dotenv').config()
 
 const cors = require("cors");
-const connectDB = require('./database/connect');
+const { connectDB } = require('./database/connect');
 const PORT = process.env.PORT || 4545;
 
 
@@ -21,9 +21,17 @@ app.use(express.urlencoded({ extended: true }));
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to MYSQL application." });
+    res.status(200).json({ message: "Welcome to MYSQL application." });
 });
 
+app.use((req,res)=>{
+    res.status(404).json({message:"Resource not found"});
+})
+
+
+app.use((req,res)=>{
+    res.status(500).json({message:"Oops... Something went wrong"});
+})
 
 const start = async() => {
     try {
@@ -37,4 +45,5 @@ const start = async() => {
     }
 }
 
-start()
+start();
+
