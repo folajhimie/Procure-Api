@@ -59,7 +59,7 @@ const signup = async (req, res) => {
     }
 };
 
-export const login = async (req, res, next) => {
+const login = async (req, res, next) => {
     try {
         const prisma = new PrismaClient();
         const { email, password } = req.body;
