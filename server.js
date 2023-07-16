@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 require('dotenv').config()
-
+const cookieParser = require('cookie-parser')
 const cors = require("cors");
 const { connectDB } = require('./database/connect');
 const PORT = process.env.PORT || 4545;
@@ -15,6 +15,8 @@ app.use(cors(corsOptions));
 
 // parse requests of content-type - application/json
 app.use(express.json());
+
+app.use(cookieParser())
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));

@@ -19,6 +19,7 @@ const User = sequelize.define("user",
         email: {
             type: Sequelize.STRING(50),
             allowNull: false,
+            unique: true,
             validate: {
                 isEmail: true,
             },
@@ -26,6 +27,22 @@ const User = sequelize.define("user",
         password: {
             type: Sequelize.STRING(100),
             allowNull: false,
+        },
+        createdAt: {
+            allowNull: false,
+            type: Sequelize.DATE
+        },
+        updatedAt: {
+            allowNull: false,
+            type: Sequelize.DATE
+        },
+        resetPasswordToken: {
+            type: Sequelize.STRING,
+            allowNull: false,
+        },
+        resetPasswordTime: {
+            type: Sequelize.DATE,
+            allowNull: false
         },
     },
     {
@@ -45,28 +62,45 @@ const User = sequelize.define("user",
 // };
 
 
-
+// Hash Password
 User.beforeCreate(async (user, options) => {
     const hashedPassword = await bcrypt.hash(user.password, 10);
-    user.password = hashedPassword;
+    this.password = hashedPassword;
 });
 
-
+// jwt token 
 User.methods.generateJwt = function() {
     var expiry = new Date();
     expiry.setDate(expiry.getDate() + 7);
 
     return jwt.sign({
-      id: this._id,
+      id: this.id,
       email: this.email,
       username: this.username,
       exp: parseInt(expiry.getTime() / 1000),
-    }, process.env.JWT_SECRET); // DO NOT KEEP YOUR SECRET IN THE CODE!
+    },  process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'}); // DO NOT KEEP YOUR SECRET IN THE CODE!
 };
 
+// compare password
 User.methods.comparePassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
+
+// Forgot Password
+User.methods.getResetToken = function() {
+    // Generatign Token
+    const resetToken = crypto.randomBytes(20).toString("hex");
+
+    // Hashing and adding resetPasswordToken to User
+    this.resetPasswordToken = crypto
+        .createHash("sha256")
+        .update(resetToken)
+        .digest("hex");
+
+    this.resetPasswordTime = Date.now() + 15 * 60 * 1000;
+
+    return resetToken;
+}
 
 
   

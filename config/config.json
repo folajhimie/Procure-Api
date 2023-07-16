@@ -1,0 +1,23 @@
+{
+    "development": {
+        "username": "root",
+        "password": "olabisi12",
+        "database": "reporite",
+        "host": "127.0.0.1",
+        "dialect": "mysql"
+    },
+    "test": {
+        "username": "root",
+        "password": "olabisi12",
+        "database": "reporite",
+        "host": "127.0.0.1",
+        "dialect": "mysql"
+    },
+    "production": {
+        "username": "root",
+        "password": "olabisi12",
+        "database": "reporite",
+        "host": "127.0.0.1",
+        "dialect": "mysql"
+    }
+} 
