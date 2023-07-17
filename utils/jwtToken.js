@@ -1,9 +1,9 @@
 require('dotenv').config()
 
 // create token and saving that in cookies
-const sendToken = (user,statusCode,res) =>{
+const sendToken = (user,token,statusCode,res) =>{
 
-    const token = user.generateJwt()
+    // const token = user.generateJwt()
 
     // Options for cookies
     const options = {

@@ -5,9 +5,10 @@ const Op = db.Sequelize.Op;
 const sendToken = require('../utils/jwtToken');
 const catchAsyncErrors = require('../utils/ErrorHandler')
 const ErrorHandler = require("../utils/ErrorHandler")
+const { generateJwt, comparePassword } = require('../utils/ModelHandlers')
 
 const signup = catchAsyncErrors(async (req, res, next) => {
-    const { username, password, email } = req.body;
+    const { id, username, password, email } = req.body;
     try {
         if (!username || !email || !password) {
             return res.status(400).json({
@@ -51,6 +52,8 @@ const signup = catchAsyncErrors(async (req, res, next) => {
             password 
         })
 
+        generateJwt(id, email, username)
+
         sendToken(newUser, 200, res);
     } catch(error) {
         res.status(500).json({
@@ -78,7 +81,9 @@ const login = catchAsyncErrors(async (req, res, next) => {
             );
         }
 
-        const isPasswordMatched = await user.comparePassword(password);
+        const checkPassword = checkUser.password
+
+        const isPasswordMatched = comparePassword(checkPassword, password);
 
         if (!isPasswordMatched) {
             return next(

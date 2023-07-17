@@ -69,38 +69,38 @@ User.beforeCreate(async (user, options) => {
 });
 
 // jwt token 
-User.methods.generateJwt(async () => {
-    var expiry = new Date();
-    expiry.setDate(expiry.getDate() + 7);
+// User.methods.generateJwt(async () => {
+//     var expiry = new Date();
+//     expiry.setDate(expiry.getDate() + 7);
 
-    return jwt.sign({
-      id: this.id,
-      email: this.email,
-      username: this.username,
-      exp: parseInt(expiry.getTime() / 1000),
-    },  process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'}); // DO NOT KEEP YOUR SECRET IN THE CODE!
-});
+//     return jwt.sign({
+//       id: this.id,
+//       email: this.email,
+//       username: this.username,
+//       exp: parseInt(expiry.getTime() / 1000),
+//     },  process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'}); // DO NOT KEEP YOUR SECRET IN THE CODE!
+// });
 
-// compare password
-User.methods.comparePassword = async function (enteredPassword) {
-    return await bcrypt.compare(enteredPassword, this.password);
-};
+// // compare password
+// User.methods.comparePassword = async function (enteredPassword) {
+//     return await bcrypt.compare(enteredPassword, this.password);
+// };
 
-// Forgot Password
-User.methods.getResetToken (async () => {
-    // Generatign Token
-    const resetToken = crypto.randomBytes(20).toString("hex");
+// // Forgot Password
+// User.methods.getResetToken (async () => {
+//     // Generatign Token
+//     const resetToken = crypto.randomBytes(20).toString("hex");
 
-    // Hashing and adding resetPasswordToken to User
-    this.resetPasswordToken = crypto
-        .createHash("sha256")
-        .update(resetToken)
-        .digest("hex");
+//     // Hashing and adding resetPasswordToken to User
+//     this.resetPasswordToken = crypto
+//         .createHash("sha256")
+//         .update(resetToken)
+//         .digest("hex");
 
-    this.resetPasswordTime = Date.now() + 15 * 60 * 1000;
+//     this.resetPasswordTime = Date.now() + 15 * 60 * 1000;
 
-    return resetToken;
-})
+//     return resetToken;
+// })
 
 
   
