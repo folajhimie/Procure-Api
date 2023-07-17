@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 const cors = require("cors");
 const { connectDB } = require('./database/connect');
 const PORT = process.env.PORT || 4545;
+const db = require("./models/index")
 
 
 var corsOptions = {
@@ -17,6 +18,8 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use(cookieParser())
+
+db.sequelize.sync({ alter: true })
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));

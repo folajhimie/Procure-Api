@@ -1,6 +1,6 @@
 const { sequelize } = require('../database/connect');
 const Sequelize = require("sequelize");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken")
 
 
@@ -69,7 +69,7 @@ User.beforeCreate(async (user, options) => {
 });
 
 // jwt token 
-User.methods.generateJwt = function() {
+User.methods.generateJwt(async () => {
     var expiry = new Date();
     expiry.setDate(expiry.getDate() + 7);
 
@@ -79,7 +79,7 @@ User.methods.generateJwt = function() {
       username: this.username,
       exp: parseInt(expiry.getTime() / 1000),
     },  process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'}); // DO NOT KEEP YOUR SECRET IN THE CODE!
-};
+});
 
 // compare password
 User.methods.comparePassword = async function (enteredPassword) {
@@ -87,7 +87,7 @@ User.methods.comparePassword = async function (enteredPassword) {
 };
 
 // Forgot Password
-User.methods.getResetToken = function() {
+User.methods.getResetToken (async () => {
     // Generatign Token
     const resetToken = crypto.randomBytes(20).toString("hex");
 
@@ -100,7 +100,7 @@ User.methods.getResetToken = function() {
     this.resetPasswordTime = Date.now() + 15 * 60 * 1000;
 
     return resetToken;
-}
+})
 
 
   

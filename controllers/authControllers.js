@@ -39,7 +39,7 @@ const signup = catchAsyncErrors(async (req, res, next) => {
             })
         }
 
-        const checkUser = await User.findOne({ email });
+        const checkUser = await User.findOne({ where: { email } });
 
         if (checkUser)
             return res.status(401).json({ status: false, message: "User already exist." })
@@ -70,7 +70,7 @@ const login = catchAsyncErrors(async (req, res, next) => {
             })
         }
 
-        const checkUser = await User.findOne({ email });
+        const checkUser = await User.findOne({ where: { email } });
 
         if (!checkUser) {
             return next(
