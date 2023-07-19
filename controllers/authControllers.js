@@ -12,7 +12,7 @@ const signup = catchAsyncErrors(async (req, res, next) => {
     try {
         if (!username || !email || !password) {
             return res.status(400).json({
-                status: false,
+                status: false,  
                 message: 'Empty Input Fields'
             })
         }
@@ -51,6 +51,7 @@ const signup = catchAsyncErrors(async (req, res, next) => {
             email, 
             password 
         })
+        console.log("new user...", newUser)
 
         generateJwt(id, email, username)
 
